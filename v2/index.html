@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Madi Talgat</title>
-  <meta name="description" content="Madi Talgat — full-stack developer (React & TypeScript) in Astana. EpiQ, NomadCodes, LexiSpark, Online Judge.">
+  <meta name="description" content="Madi Talgat — full-stack developer (React & TypeScript) in Astana. EpiQ, LexiSpark, Online Judge.">
   <meta name="theme-color" content="#ffffff">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232440ff'/%3E%3Ctext x='4' y='23' font-family='monospace' font-size='17' font-weight='700' fill='%23ffffff'%3E%3E_%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +56,6 @@
       color: var(--ink);
       font-family: 'DM Sans', sans-serif;
       overflow-x: hidden;
-      cursor: none;
     }
 
     ::selection {
@@ -77,42 +76,6 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-    }
-
-
-    /* ─────────────────────────────────────────
-       CURSOR
-    ───────────────────────────────────────── */
-    #cur {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      width: 9px;
-      height: 9px;
-      background: var(--sky);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width .18s, height .18s, background .18s;
-    }
-
-    #cur-ring {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9998;
-      width: 30px;
-      height: 30px;
-      border: 1px solid rgba(36, 64, 255, .35);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width .22s, height .22s, border-color .22s;
-    }
-
-    .curbig #cur      { width: 15px; height: 15px; background: var(--gold); }
-    .curbig #cur-ring { width: 46px; height: 46px; border-color: rgba(255, 46, 147, .5); }
-
-    @media (hover: none) {
-      #cur, #cur-ring { display: none; }
-      body { cursor: auto; }
     }
 
 
@@ -315,8 +278,8 @@
     ───────────────────────────────────────── */
     .hero {
       position: relative;
-      min-height: min(calc(100vh - 3.8rem), 860px);
-      margin-bottom: 4rem;
+      min-height: min(74vh, 710px);
+      margin-bottom: clamp(2.25rem, 5vh, 3.5rem);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -513,8 +476,11 @@
       animation: fadeup .6s .22s forwards;
     }
 
-    .ul {
-      border-bottom: 2.5px solid var(--gold);
+    .inline-emphasis {
+      text-decoration: underline;
+      text-decoration-color: var(--gold);
+      text-decoration-thickness: .1em;
+      text-underline-offset: .15em;
     }
 
     /* hero 3D — frameless, floating on the page, two inks (blue body, pink highlights) */
@@ -525,12 +491,13 @@
       right: -4rem;
       width: min(50%, 560px);
       height: calc(100% - 3rem);
-      cursor: none;
+      cursor: grab;
       touch-action: none;
       opacity: 0;
       animation: fadeup .9s .25s forwards;
     }
 
+    .hero-3d:active { cursor: grabbing; }
     .hero-3d .ascii { font-size: 10px; }
     .hero-3d .ascii-hi { color: var(--gold); }
 
@@ -563,16 +530,27 @@
     }
 
     .ticker-track {
-      display: inline-flex;
-      animation: ticker 38s linear infinite;
+      display: flex;
+      width: max-content;
     }
 
-    .ticker b { color: var(--gold); font-weight: 400; padding: 0 .35rem; }
+    .ticker-track.is-looping { animation: ticker 38s linear infinite; }
+
+    .ticker-group, .ticker-group span {
+      display: flex;
+      align-items: center;
+      flex: none;
+    }
+
+    .ticker-group { gap: 1.8rem; padding-right: 1.8rem; }
+    .ticker-group span { gap: .45rem; }
+    .ticker-group img { width: 20px; height: 20px; object-fit: contain; }
 
     @keyframes ticker {
       to { transform: translateX(-50%); }
     }
 
+    .hero-contact { font-style: normal; }
     .hero-cta {
       display: flex;
       flex-wrap: wrap;
@@ -593,7 +571,6 @@
       border-radius: 3px;
       padding: .55rem .9rem;
       transition: border-color .18s, background .18s, color .18s, transform .16s cubic-bezier(.23, 1, .32, 1);
-      cursor: none;
     }
 
     .btn:hover { border-color: var(--sky); }
@@ -630,16 +607,15 @@
     .hl-r  { background: var(--r);  color: #3d0800; }
     .hl-t  { background: var(--t);  color: #00302a; }
 
-    .hl-outline {
-      display: inline-block;
-      border: 1.5px solid var(--sky);
-      color: var(--sky);
-      border-radius: 4px;
-      padding: .04rem .5rem;
-      font-family: 'DM Mono', monospace;
-      font-size: .7rem;
+    .info-list .hl {
+      display: inline;
+      font: inherit;
+      letter-spacing: inherit;
+      white-space: normal;
+      padding: 0 .16em;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
     }
-
 
     /* ─────────────────────────────────────────
        INFO LIST
@@ -710,9 +686,7 @@
       gap: 2.4rem 2rem;
     }
 
-    .proj-card {
-      cursor: none;
-    }
+    .proj-card { position: relative; }
 
     .proj-thumb {
       position: relative;
@@ -725,13 +699,14 @@
       transition: border-color .25s;
     }
 
-    .proj-card:hover .proj-thumb { border-color: var(--sky); }
+    .proj-card:has(a.proj-name:is(:hover, :focus-visible)) .proj-thumb { border-color: var(--sky); }
 
     .proj-thumb .ascii { transition: transform .5s cubic-bezier(.23, 1, .32, 1), color .25s; }
-    .proj-card:hover .proj-thumb .ascii { transform: scale(1.04); }
+    .proj-card:has(a.proj-name:is(:hover, :focus-visible)) .proj-thumb .ascii { transform: scale(1.04); }
     .proj-card[data-tint="gold"] .ascii { color: var(--gold); }
 
     .proj-thumb-tag {
+      pointer-events: none;
       position: absolute;
       left: .6rem;
       top: .5rem;
@@ -741,45 +716,6 @@
       color: var(--light);
       background: var(--panel);
       padding: 0 .3rem;
-    }
-
-    /* hover preview tooltip */
-    .proj-preview {
-      position: fixed;
-      width: 220px;
-      background: var(--panel);
-      border: 1px solid var(--sky);
-      border-radius: 3px;
-      overflow: hidden;
-      pointer-events: none;
-      z-index: 200;
-      opacity: 0;
-      transform: scale(.93) translateY(5px);
-      transform-origin: top left;
-      transition: opacity .16s, transform .16s cubic-bezier(.23, 1, .32, 1);
-      box-shadow: 0 8px 32px rgba(13, 14, 40, .14);
-    }
-
-    .proj-preview.show {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-
-    .proj-preview-art {
-      font-family: 'DM Mono', monospace;
-      font-size: .7rem;
-      line-height: 1.25;
-      color: var(--sky);
-      padding: .8rem .9rem;
-      white-space: pre;
-    }
-
-    .proj-preview-url {
-      font-family: 'DM Mono', monospace;
-      font-size: .7rem;
-      color: var(--light);
-      padding: .38rem .6rem;
-      border-top: 1px solid var(--border);
     }
 
     .proj-meta {
@@ -800,9 +736,25 @@
       border-bottom: 1px solid transparent;
     }
 
-    .proj-card:hover .proj-name {
+    a.proj-name::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    a.proj-name:is(:hover, :focus-visible) {
       color: var(--sky);
-      border-bottom-color: var(--border);
+      border-bottom-color: currentColor;
+    }
+
+    .project-arrow { display: inline-block; color: var(--sky); transition: transform .16s; }
+    a.proj-name:is(:hover, :focus-visible) .project-arrow { transform: translate(2px, -2px); }
+
+    @media (hover: hover) and (pointer: fine) {
+      a.proj-name::after {
+        cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M5 21 21 5M7 5h14v14' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M5 21 21 5M7 5h14v14' fill='none' stroke='%232440ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 21 5, pointer;
+      }
     }
 
     .proj-date {
@@ -913,38 +865,26 @@
 
 
     /* ─────────────────────────────────────────
-       WINS (ascii podium)
+       HACKATHONS
     ───────────────────────────────────────── */
-    .wins {
+    .win-list { list-style: none; border-bottom: 1px solid var(--border); }
+    .win-list li {
       display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 1.5rem 3rem;
-      align-items: center;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      gap: .8rem 1.5rem;
+      padding: 1.4rem 0;
+      border-top: 1px solid var(--border);
     }
 
-    .podium {
-      font-family: 'DM Mono', monospace;
-      font-size: 14px;
-      line-height: 1.2;
-      color: var(--light);
-      white-space: pre;
-      margin: 0;
-    }
-
-    .podium b { color: var(--gold); font-weight: 500; }
-    .podium i { font-style: normal; color: var(--sky); }
-
-    .win-list { list-style: none; display: grid; gap: 1.2rem; }
-    .win-list li { display: grid; grid-template-columns: 3.2rem 1fr; gap: 1rem; }
+    .win-title { font-size: 1.15rem; font-weight: 500; }
+    .win-text { max-width: 57ch; margin-top: .35rem; font-size: .9rem; line-height: 1.55; color: var(--mid); }
     .win-place {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 2.2rem;
-      line-height: 1;
-      color: var(--gold);
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      white-space: nowrap;
+      color: var(--sky);
     }
-    .win-title { font-weight: 500; font-size: .92rem; margin-bottom: .2rem; }
-    .win-text { font-size: .82rem; color: var(--mid); line-height: 1.7; }
 
 
     /* ─────────────────────────────────────────
@@ -981,7 +921,7 @@
       border: 1px solid var(--border);
       border-radius: 2px;
       transition: border-color .2s, color .2s, background .2s;
-      cursor: none;
+      cursor: pointer;
     }
 
     .sk-chip:hover, .sk-chip:focus-visible {
@@ -1055,26 +995,11 @@
     /* ─────────────────────────────────────────
        CONTACT / FOOTER
     ───────────────────────────────────────── */
-    .contact-mail {
-      display: inline-block;
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: clamp(2rem, 5vw, 3.4rem);
-      color: var(--ink);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 1.4rem;
-      transition: color .2s, border-color .2s;
-      word-break: break-all;
-    }
-
-    .contact-mail:hover { color: var(--sky); border-color: var(--sky); }
-
     .contact-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 1.2rem;
-      margin-bottom: 1rem;
+      gap: .4rem 1rem;
+      margin-top: .85rem;
     }
 
     .contact-link {
@@ -1143,15 +1068,14 @@
       border-bottom: 1px solid var(--border);
       padding: .9rem 1.4rem;
       align-items: center;
-      justify-content: space-between;
-      opacity: 0;
-      transform: translateY(-6px);
-      transition: opacity .3s, transform .3s;
+      gap: 1rem;
     }
 
-    .topnav.show {
-      opacity: 1;
-      transform: none;
+    .topnav-github {
+      margin-left: auto;
+      font: .82rem 'DM Mono', monospace;
+      color: var(--sky);
+      text-decoration: none;
     }
 
     .topnav-name {
@@ -1194,8 +1118,6 @@
       gap: 0;
     }
 
-    .mob-menu.open { display: flex; }
-
     .mob-menu a {
       font-family: 'DM Mono', monospace;
       font-size: .76rem;
@@ -1215,40 +1137,47 @@
     ───────────────────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
       .ticker-track { animation: none !important; }
+      .reveal { opacity: 1; transform: none; }
     }
 
     @media (max-width: 1100px) {
-      .hero { min-height: 0; padding-bottom: 4rem; }
+      .hero { min-height: 0; padding-bottom: 4.5rem; isolation: isolate; }
       .hero-3d {
-        position: relative;
-        right: auto;
-        width: 100%;
-        height: auto;
-        aspect-ratio: 16 / 11;
-        max-width: 560px;
-        margin-top: 1.5rem;
+        top: 3rem;
+        right: 0;
+        width: min(40%, 300px);
+        height: clamp(140px, 30vw, 280px);
+        opacity: 1;
+        animation: none;
+        pointer-events: none;
+        touch-action: auto;
+        mask-image: linear-gradient(to right, transparent, #000 30%);
       }
-      .frame-hint { right: 0; }
+      .hero-3d .ascii { opacity: .38; font-size: 7px; }
+      .frame-hint { display: none; }
       .ticker { right: 0; }
     }
 
     @media (max-width: 860px) {
       .sidenav        { display: none; }
-      .topnav         { display: flex; }
+      .topnav, .mob-menu.open { display: flex; }
       main            { margin-left: 0; padding: 4.5rem 1.6rem 0; }
+      #contact, .section { scroll-margin-top: 4.2rem; }
       .hero-name      { font-size: clamp(4rem, 16vw, 7rem); }
-      .proj-grid      { grid-template-columns: 1fr; gap: 2rem; }
+      .proj-grid      { grid-template-columns: 1fr; gap: 0; }
+      .proj-card      { padding: 1.2rem 0; border-top: 1px solid var(--border); }
+      .proj-thumb     { display: none; }
       .exp-item       { grid-template-columns: 1fr; gap: .3rem; }
-      .wins           { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 480px) {
-      main         { padding: 4.5rem 1rem 0; }
+      main         { padding: 4.3rem 1rem 0; }
+      .hero-status { margin-bottom: 1.25rem; }
       .hero-name   { font-size: clamp(3.4rem, 18vw, 5.5rem); }
-      .skills-grid { grid-template-columns: 1fr 1fr; }
-      .podium      { font-size: 12px; }
+      .hero-tagline { margin-bottom: 1.25rem; }
+      .skills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem .8rem; }
+      .win-list li { gap: .8rem; }
     }
-
 
     /* ─────────────────────────────────────────
        ANIMATIONS
@@ -1262,17 +1191,7 @@
 </head>
 <body>
 
-<div id="cur"></div>
-<div id="cur-ring"></div>
 <span class="ascii-probe" id="asciiProbe">MMMMMMMMMM</span>
-
-<!-- Project hover preview -->
-<div class="proj-preview" id="pp">
-  <div class="proj-preview-art">┌──────────────┐
-│   open  ↗    │
-└──────────────┘</div>
-  <div class="proj-preview-url" id="ppUrl"></div>
-</div>
 
 <!-- Skill tooltip -->
 <div class="sk-tip" id="skTip" role="tooltip">
@@ -1287,12 +1206,12 @@
 <nav class="sidenav">
   <div class="sidenav-name" id="sidenavName">Madi<br>Talgat</div>
   <a href="#top">me</a>
+  <a href="#contact">contact</a>
+  <a href="#skills">skills</a>
   <a href="#now">now</a>
   <a href="#projects">projects</a>
   <a href="#experience">experience</a>
-  <a href="#wins">wins</a>
-  <a href="#skills">skills</a>
-  <a href="#contact">contact</a>
+  <a href="#wins">hackathons</a>
   <div class="sidenav-gap"></div>
   <div class="sidenav-status">
     <span class="dot"></span>
@@ -1307,20 +1226,21 @@
 <!-- Mobile nav -->
 <nav class="topnav" id="topnav">
   <a href="#top" class="topnav-name">Madi Talgat</a>
-  <button class="burger" id="burger" aria-label="Menu">
+  <a class="topnav-github" href="https://github.com/Feruum" target="_blank" rel="noopener">GitHub ↗</a>
+  <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mobMenu">
     <span></span>
     <span></span>
     <span></span>
   </button>
 </nav>
 <div class="mob-menu" id="mobMenu">
-  <a href="#top"        onclick="closeMob()">me</a>
-  <a href="#now"        onclick="closeMob()">now</a>
-  <a href="#projects"   onclick="closeMob()">projects</a>
-  <a href="#experience" onclick="closeMob()">experience</a>
-  <a href="#wins"       onclick="closeMob()">wins</a>
-  <a href="#skills"     onclick="closeMob()">skills</a>
-  <a href="#contact"    onclick="closeMob()">contact</a>
+  <a href="#top">me</a>
+  <a href="#contact">contact</a>
+  <a href="#skills">skills</a>
+  <a href="#now">now</a>
+  <a href="#projects">projects</a>
+  <a href="#experience">experience</a>
+  <a href="#wins">hackathons</a>
 </div>
 
 
@@ -1335,8 +1255,7 @@
       <p class="hero-status">
         <span class="dot"></span>
         <span>open to work &mdash; react / typescript roles</span>
-        <span class="hero-status-sep">/</span>
-        <span>astana <span id="localTime">--:--</span></span>
+        <span><span class="hero-status-sep" aria-hidden="true">/</span> astana <span id="localTime">--:--</span></span>
       </p>
 
       <h1 class="hero-name">
@@ -1358,15 +1277,23 @@
       </div>
 
       <p class="hero-tagline">
-        I <span class="ul">build</span> web apps <span class="hl-outline">end to end</span> &mdash;
+        I build web apps <span class="inline-emphasis">end to end</span> &mdash;
         the UI, the API, and the server it runs on.
       </p>
 
-      <div class="hero-cta">
-        <a class="btn btn-primary" href="Madi_Talgat_CV.pdf" target="_blank">download cv &darr;</a>
-        <a class="btn" href="mailto:mditalgat@gmail.com">email</a>
-        <a class="btn" href="https://t.me/ferum_m" target="_blank" rel="noopener">telegram &nearr;</a>
-      </div>
+      <address id="contact" class="hero-contact" aria-label="Contact Madi Talgat">
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="mailto:mditalgat@gmail.com">mditalgat@gmail.com</a>
+          <a class="btn" href="https://t.me/ferum_m" target="_blank" rel="noopener">Telegram ↗</a>
+          <a class="btn" href="https://github.com/Feruum" target="_blank" rel="noopener">GitHub ↗</a>
+          <a class="btn" href="Madi_Talgat_CV.pdf" target="_blank" rel="noopener">Download CV ↓</a>
+        </div>
+        <div class="contact-links">
+          <a href="https://www.linkedin.com/in/madi-talgat-165048383" target="_blank" rel="noopener" class="contact-link">LinkedIn ↗</a>
+          <a href="https://wa.me/77473663358" target="_blank" rel="noopener" class="contact-link">WhatsApp ↗</a>
+          <a href="tel:+77473663358" class="contact-link">+7 747 366 33 58</a>
+        </div>
+      </address>
     </div>
 
     <div class="hero-3d" id="hero3d" role="img" aria-label="Rotating 3D torus knot drawn in ASCII characters">
@@ -1377,203 +1304,21 @@
 
     <div class="ticker" aria-hidden="true">
       <div class="ticker-track">
-        <span>react <b>~</b> typescript <b>~</b> bun <b>~</b> elysia <b>~</b> nestjs <b>~</b> postgresql <b>~</b> docker <b>~</b> tailwind <b>~</b> shadcn/ui <b>~</b> judge0 <b>~</b> yolo26s <b>~</b> mcp <b>~</b>&nbsp;</span>
-        <span>react <b>~</b> typescript <b>~</b> bun <b>~</b> elysia <b>~</b> nestjs <b>~</b> postgresql <b>~</b> docker <b>~</b> tailwind <b>~</b> shadcn/ui <b>~</b> judge0 <b>~</b> yolo26s <b>~</b> mcp <b>~</b>&nbsp;</span>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- NOW -->
-  <section class="section reveal" id="now">
-    <h2 class="sec-hdr"><span class="bracket">[</span>now<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
-    <ul class="info-list">
-      <li>full-stack at <span class="hl hl-b">EpiQ</span> &mdash; healthcare product, data for a <span class="hl hl-pu">predictive model</span>, interviews with doctors in hospitals</li>
-      <li>frontend at <span class="hl hl-t">NomadCodes</span> &mdash; React, TypeScript, Ant Design</li>
-      <li>built and launched <span class="hl hl-g">LexiSpark</span> solo &mdash; <span class="hl hl-o">~100 users</span></li>
-      <li><span class="hl hl-y">1st place</span> AITU / NNEF hackathon &middot; <span class="hl hl-pk">3rd place</span> Datathon 2026 (KZT 500,000)</li>
-      <li>software engineering @ <span class="hl hl-r">Astana IT University</span>, class of 2028</li>
-    </ul>
-  </section>
-
-
-  <!-- PROJECTS -->
-  <section class="section reveal" id="projects">
-    <h2 class="sec-hdr"><span class="bracket">[</span>projects<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
-
-    <div class="proj-grid">
-
-      <!-- LexiSpark -->
-      <div class="proj-card" data-url="https://lexispark.app" data-label="lexispark.app">
-        <div class="proj-thumb">
-          <span class="proj-thumb-tag">lexispark.app</span>
-          <pre class="ascii" data-scene="lexi" aria-hidden="true"></pre>
-        </div>
-        <div class="proj-meta">
-          <a href="https://lexispark.app" target="_blank" rel="noopener" class="proj-name">LexiSpark</a>
-          <span class="proj-date">live &middot; ~100 users</span>
-        </div>
-        <div class="proj-desc">
-          Language-learning app I built and launched on my own. I own all of it &mdash; frontend, backend,
-          deployment and server administration.
-        </div>
-        <div class="proj-tags">
-          <span class="proj-tag">TypeScript</span>
-          <span class="proj-tag">Bun</span>
-          <span class="proj-tag">ElysiaJS</span>
-          <span class="proj-tag">React</span>
-          <span class="proj-tag">shadcn/ui</span>
+        <div class="ticker-group">
+          <span><img src="./logos/react.svg" width="20" height="20" alt="">React</span>
+          <span><img src="./logos/typescript.svg" width="20" height="20" alt="">TypeScript</span>
+          <span><img src="./logos/bun.svg" width="20" height="20" alt="">Bun</span>
+          <span><img src="./logos/elysia.svg" width="20" height="20" alt="">ElysiaJS</span>
+          <span><img src="./logos/nestjs.svg" width="20" height="20" alt="">NestJS</span>
+          <span><img src="./logos/postgresql.svg" width="20" height="20" alt="">PostgreSQL</span>
+          <span><img src="./logos/docker.svg" width="20" height="20" alt="">Docker</span>
+          <span><img src="./logos/tailwindcss.svg" width="20" height="20" alt="">Tailwind CSS</span>
+          <span><img src="./logos/shadcnui.svg" width="20" height="20" alt="">shadcn/ui</span>
+          <span><img src="./logos/judge0.png" width="20" height="20" alt="">Judge0</span>
+          <span><img src="./logos/yolo.svg" width="20" height="20" alt="">YOLO26s</span>
+          <span><img src="./logos/modelcontextprotocol.svg" width="20" height="20" alt="">MCP</span>
         </div>
       </div>
-
-      <!-- Online Judge -->
-      <!-- TODO: replace data-url / href with the exact repository URL -->
-      <div class="proj-card" data-tint="gold" data-url="https://github.com/Feruum" data-label="github.com/Feruum">
-        <div class="proj-thumb">
-          <span class="proj-thumb-tag">judge0 &rarr; accepted</span>
-          <pre class="ascii" data-scene="judge" aria-hidden="true"></pre>
-        </div>
-        <div class="proj-meta">
-          <a href="https://github.com/Feruum" target="_blank" rel="noopener" class="proj-name">Online Judge</a>
-          <span class="proj-date">repo</span>
-        </div>
-        <div class="proj-desc">
-          LeetCode-style platform: pick a problem, submit code, get it judged by Judge0. NestJS backend,
-          React frontend, PostgreSQL storage, orchestrated with Docker Compose.
-        </div>
-        <div class="proj-tags">
-          <span class="proj-tag">React</span>
-          <span class="proj-tag">NestJS</span>
-          <span class="proj-tag">Judge0</span>
-          <span class="proj-tag">PostgreSQL</span>
-          <span class="proj-tag">Docker</span>
-        </div>
-      </div>
-
-      <!-- Flood monitoring (hackathon) -->
-      <div class="proj-card" data-tint="gold" data-label="AITU / NNEF hackathon · 1st place">
-        <div class="proj-thumb">
-          <span class="proj-thumb-tag">reservoir level &middot; live</span>
-          <pre class="ascii" data-scene="water" aria-hidden="true"></pre>
-        </div>
-        <div class="proj-meta">
-          <span class="proj-name">Reservoir &amp; flood monitoring</span>
-          <span class="proj-date">1st place</span>
-        </div>
-        <div class="proj-desc">
-          24-hour AITU / NNEF hackathon challenge on reservoir monitoring and flood prevention. Our team took
-          first place.
-        </div>
-        <div class="proj-tags">
-          <span class="proj-tag">Hackathon</span>
-          <span class="proj-tag">24h</span>
-          <span class="proj-tag">Monitoring</span>
-        </div>
-      </div>
-
-      <!-- Datathon -->
-      <div class="proj-card" data-label="Datathon 2026 · 3rd place">
-        <div class="proj-thumb">
-          <span class="proj-thumb-tag">yolo26s &middot; detect</span>
-          <pre class="ascii" data-scene="detect" aria-hidden="true"></pre>
-        </div>
-        <div class="proj-meta">
-          <span class="proj-name">Cash-ops violation detection</span>
-          <span class="proj-date">3rd place</span>
-        </div>
-        <div class="proj-desc">
-          Datathon 2026: trained a YOLO26s model to detect violations in cash operations from video.
-          Team awarded KZT 500,000.
-        </div>
-        <div class="proj-tags">
-          <span class="proj-tag">YOLO26s</span>
-          <span class="proj-tag">Computer Vision</span>
-          <span class="proj-tag">Video</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- EXPERIENCE -->
-  <section class="section reveal" id="experience">
-    <h2 class="sec-hdr"><span class="bracket">[</span>experience<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
-
-    <div class="exp-list">
-
-      <div class="exp-item reveal">
-        <div class="exp-when">2025<br>&ndash; Present</div>
-        <div>
-          <div class="exp-top">
-            <div class="exp-role">Full-Stack Developer</div>
-            <span class="hl hl-b" style="font-size: .7rem">current</span>
-          </div>
-          <div class="exp-company">EpiQ &middot; <a href="https://epiq.top" target="_blank" rel="noopener">epiq.top</a></div>
-          <ul class="exp-ul">
-            <li>Develop frontend and backend features for a healthcare software product.</li>
-            <li>Collect and analyze data to support the development of a predictive model.</li>
-            <li>Visit hospitals and interview healthcare professionals to understand user workflows and product requirements.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item reveal">
-        <div class="exp-when">Current</div>
-        <div>
-          <div class="exp-top">
-            <div class="exp-role">Frontend Developer</div>
-            <span class="hl hl-t" style="font-size: .7rem">current</span>
-          </div>
-          <div class="exp-company">NomadCodes</div>
-          <ul class="exp-ul">
-            <li>Build web interfaces with React, TypeScript, and Ant Design.</li>
-            <li>Integrate frontend features with backend APIs and connect UI components to application data.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="exp-item reveal">
-        <div class="exp-when">2025<br>&ndash; 2028</div>
-        <div>
-          <div class="exp-role">BSc Software Engineering</div>
-          <div class="exp-company">Astana IT University</div>
-          <ul class="exp-ul">
-            <li>Member of WebSpace (2025 &ndash; present) and Hustle / Business Club &mdash; pitching startup ideas and supporting product development.</li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- WINS -->
-  <section class="section reveal" id="wins">
-    <h2 class="sec-hdr"><span class="bracket">[</span>wins<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
-
-    <div class="wins">
-<pre class="podium" aria-hidden="true">       +-----+
- + - - +  <b>1</b>  |
- :  <i>?</i>  |     +-----+
- :     |     |  <b>3</b>  |
--+-----+-----+-----+-</pre>
-      <ul class="win-list">
-        <li>
-          <span class="win-place">1st</span>
-          <div>
-            <div class="win-title">AITU / NNEF Hackathon</div>
-            <div class="win-text">24-hour challenge focused on reservoir monitoring and flood prevention.</div>
-          </div>
-        </li>
-        <li>
-          <span class="win-place">3rd</span>
-          <div>
-            <div class="win-title">Datathon 2026</div>
-            <div class="win-text">Team awarded KZT 500,000 &mdash; trained a YOLO26s model to detect violations in cash operations from video.</div>
-          </div>
-        </li>
-      </ul>
     </div>
   </section>
 
@@ -1641,29 +1386,166 @@
   </section>
 
 
-  <!-- CONTACT -->
-  <section class="section reveal" id="contact">
-    <h2 class="sec-hdr"><span class="bracket">[</span>contact<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
+  <!-- NOW -->
+  <section class="section reveal" id="now">
+    <h2 class="sec-hdr"><span class="bracket">[</span>now<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
+    <ul class="info-list">
+      <li>full-stack at <span class="hl hl-b">EpiQ</span> &mdash; healthcare product, data for a <span class="hl hl-pu">predictive model</span>, interviews with doctors in hospitals</li>
+      <li>built and launched <span class="hl hl-g">LexiSpark</span> solo &mdash; <span class="hl hl-o">~100 users</span></li>
+      <li><span class="hl hl-y">1st place</span> AITU / NNEF hackathon &middot; <span class="hl hl-pk">3rd place</span> Datathon 2026 (KZT 500,000)</li>
+      <li>software engineering @ <span class="hl hl-r">Astana IT University</span>, class of 2028</li>
+    </ul>
+  </section>
 
-    <p style="font-size:.9rem; color:var(--mid); margin-bottom:1.1rem; max-width:480px; line-height:1.85">
-      Hiring for a React / TypeScript role or an internship? The fastest way is Telegram or email.
-    </p>
 
-    <a href="mailto:mditalgat@gmail.com" class="contact-mail">mditalgat@gmail.com</a>
+  <!-- PROJECTS -->
+  <section class="section reveal" id="projects">
+    <h2 class="sec-hdr"><span class="bracket">[</span>projects<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
 
-    <div class="contact-links">
-      <a href="https://t.me/ferum_m" target="_blank" rel="noopener" class="contact-link">telegram &nearr;</a>
-      <a href="https://wa.me/77473663358" target="_blank" rel="noopener" class="contact-link">whatsapp &nearr;</a>
-      <a href="https://www.linkedin.com/in/madi-talgat-165048383" target="_blank" rel="noopener" class="contact-link">linkedin &nearr;</a>
-      <a href="https://github.com/Feruum" target="_blank" rel="noopener" class="contact-link">github &nearr;</a>
-      <a href="tel:+77473663358" class="contact-link">+7 747 366 33 58</a>
-    </div>
+    <div class="proj-grid">
 
-    <div class="footer">
-      <span class="footer-l">&copy; 2026 Madi Talgat</span>
-      <span class="footer-r">astana, kz</span>
+      <!-- LexiSpark -->
+      <div class="proj-card">
+        <div class="proj-thumb">
+          <span class="proj-thumb-tag">lexispark.app</span>
+          <pre class="ascii" data-scene="lexi" aria-hidden="true"></pre>
+        </div>
+        <div class="proj-meta">
+          <a href="https://lexispark.app" target="_blank" rel="noopener" class="proj-name">LexiSpark <span class="project-arrow" aria-hidden="true">↗</span></a>
+          <span class="proj-date">live &middot; ~100 users</span>
+        </div>
+        <div class="proj-desc">
+          Language-learning app I built and launched on my own. I own all of it &mdash; frontend, backend,
+          deployment and server administration.
+        </div>
+        <div class="proj-tags">
+          <span class="proj-tag">TypeScript</span>
+          <span class="proj-tag">Bun</span>
+          <span class="proj-tag">ElysiaJS</span>
+          <span class="proj-tag">React</span>
+          <span class="proj-tag">shadcn/ui</span>
+        </div>
+      </div>
+
+      <!-- Online Judge -->
+      <div class="proj-card" data-tint="gold">
+        <div class="proj-thumb">
+          <span class="proj-thumb-tag">judge0 &rarr; accepted</span>
+          <pre class="ascii" data-scene="judge" aria-hidden="true"></pre>
+        </div>
+        <div class="proj-meta">
+          <a href="https://github.com/Feruum/Online-Judge1" target="_blank" rel="noopener" class="proj-name">Online Judge <span class="project-arrow" aria-hidden="true">↗</span></a>
+          <span class="proj-date">repo</span>
+        </div>
+        <div class="proj-desc">
+          LeetCode-style platform: pick a problem, submit code, get it judged by Judge0. NestJS backend,
+          React frontend, PostgreSQL storage, orchestrated with Docker Compose.
+        </div>
+        <div class="proj-tags">
+          <span class="proj-tag">React</span>
+          <span class="proj-tag">NestJS</span>
+          <span class="proj-tag">Judge0</span>
+          <span class="proj-tag">PostgreSQL</span>
+          <span class="proj-tag">Docker</span>
+        </div>
+      </div>
+
+      <!-- Flood monitoring (hackathon) -->
+      <div class="proj-card" data-tint="gold">
+        <div class="proj-thumb">
+          <span class="proj-thumb-tag">reservoir level &middot; live</span>
+          <pre class="ascii" data-scene="water" aria-hidden="true"></pre>
+        </div>
+        <div class="proj-meta">
+          <span class="proj-name">Reservoir &amp; flood monitoring</span>
+          <span class="proj-date">1st place</span>
+        </div>
+        <div class="proj-desc">
+          24-hour AITU / NNEF hackathon challenge on reservoir monitoring and flood prevention. Our team took
+          first place.
+        </div>
+        <div class="proj-tags">
+          <span class="proj-tag">Hackathon</span>
+          <span class="proj-tag">24h</span>
+          <span class="proj-tag">Monitoring</span>
+        </div>
+      </div>
+
+      <!-- Datathon -->
+      <div class="proj-card">
+        <div class="proj-thumb">
+          <span class="proj-thumb-tag">yolo26s &middot; detect</span>
+          <pre class="ascii" data-scene="detect" aria-hidden="true"></pre>
+        </div>
+        <div class="proj-meta">
+          <span class="proj-name">Cash-ops violation detection</span>
+          <span class="proj-date">3rd place</span>
+        </div>
+        <div class="proj-desc">
+          Datathon 2026: trained a YOLO26s model to detect violations in cash operations from video.
+          Team awarded KZT 500,000.
+        </div>
+        <div class="proj-tags">
+          <span class="proj-tag">YOLO26s</span>
+          <span class="proj-tag">Computer Vision</span>
+          <span class="proj-tag">Video</span>
+        </div>
+      </div>
+
     </div>
   </section>
+
+
+  <!-- EXPERIENCE -->
+  <section class="section reveal" id="experience">
+    <h2 class="sec-hdr"><span class="bracket">[</span>experience<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
+
+    <div class="exp-list">
+
+      <div class="exp-item reveal">
+        <div class="exp-when">2025<br>&ndash; Present</div>
+        <div>
+          <div class="exp-top">
+            <div class="exp-role">Full-Stack Developer</div>
+          </div>
+          <div class="exp-company">EpiQ &middot; <a href="https://epiq.top" target="_blank" rel="noopener">epiq.top</a></div>
+          <ul class="exp-ul">
+            <li>Develop frontend and backend features for a healthcare software product.</li>
+            <li>Collect and analyze data to support the development of a predictive model.</li>
+            <li>Visit hospitals and interview healthcare professionals to understand user workflows and product requirements.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- HACKATHONS -->
+  <section class="section reveal" id="wins">
+    <h2 class="sec-hdr"><span class="bracket">[</span>hackathons<span class="bracket">]</span><span class="rule" aria-hidden="true"></span></h2>
+    <ul class="win-list">
+      <li>
+        <div>
+          <h3 class="win-title">AITU / NNEF Hackathon</h3>
+          <p class="win-text">A 24-hour team challenge on reservoir monitoring and flood prevention.</p>
+        </div>
+        <span class="win-place">1st place</span>
+      </li>
+      <li>
+        <div>
+          <h3 class="win-title">Datathon 2026</h3>
+          <p class="win-text">I trained a YOLO26s model to detect cash-handling violations on video. Our team won KZT 500,000.</p>
+        </div>
+        <span class="win-place">3rd place</span>
+      </li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    <span class="footer-l">&copy; 2026 Madi Talgat</span>
+    <span class="footer-r">astana, kz</span>
+  </footer>
 
 </main>
 
@@ -1675,71 +1557,48 @@
 <script>
 (function () {
 
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ── CURSOR ── */
-  var cd = document.getElementById('cur');
-  var cr = document.getElementById('cur-ring');
-  var mx = 0, my = 0, rx = 0, ry = 0;
-
-  document.addEventListener('mousemove', function (e) {
-    mx = e.clientX;
-    my = e.clientY;
-  });
-
-  (function tick() {
-    cd.style.left = mx + 'px';
-    cd.style.top  = my + 'px';
-    rx += (mx - rx) * .11;
-    ry += (my - ry) * .11;
-    cr.style.left = rx + 'px';
-    cr.style.top  = ry + 'px';
-    requestAnimationFrame(tick);
-  })();
-
-  document.querySelectorAll('a, button, .proj-card, .sk-chip, .hero-3d').forEach(function (el) {
-    el.addEventListener('mouseenter', function () { document.body.classList.add('curbig'); });
-    el.addEventListener('mouseleave', function () { document.body.classList.remove('curbig'); });
-  });
-
+  var track = document.querySelector('.ticker-track');
+  track.appendChild(track.firstElementChild.cloneNode(true));
+  track.classList.add('is-looping');
 
   /* ── MOBILE MENU ── */
-  var burger  = document.getElementById('burger');
+  var burger = document.getElementById('burger');
   var mobMenu = document.getElementById('mobMenu');
 
+  function setMenu(open) {
+    mobMenu.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', String(open));
+  }
+
   burger.addEventListener('click', function () {
-    mobMenu.classList.toggle('open');
+    setMenu(!mobMenu.classList.contains('open'));
   });
-
-  window.closeMob = function () {
-    mobMenu.classList.remove('open');
-  };
-
-  document.addEventListener('click', function (e) {
-    if (!burger.contains(e.target) && !mobMenu.contains(e.target)) {
-      mobMenu.classList.remove('open');
+  document.addEventListener('click', function (event) {
+    if (!burger.contains(event.target)) setMenu(false);
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && mobMenu.classList.contains('open')) {
+      setMenu(false);
+      burger.focus();
     }
   });
-
 
   /* ── SCROLL: nav active + show name ── */
   var heroEl = document.querySelector('.hero-name');
   var snName = document.getElementById('sidenavName');
-  var tnav   = document.getElementById('topnav');
-  var secs   = document.querySelectorAll('section[id]');
+  var secs   = document.querySelectorAll('main #contact, main > section[id]');
   var navAs  = document.querySelectorAll('.sidenav > a');
 
   function onScroll() {
     var id = 'top';
     secs.forEach(function (s) {
-      if (window.scrollY >= s.offsetTop - 220) id = s.id;
+      if (s.getBoundingClientRect().top <= 220) id = s.id;
     });
     navAs.forEach(function (a) {
       a.classList.toggle('active', a.getAttribute('href') === '#' + id);
     });
     var past = heroEl && heroEl.getBoundingClientRect().bottom < 60;
     snName.classList.toggle('show', past);
-    tnav.classList.toggle('show', past);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
@@ -1827,42 +1686,18 @@
   }
 
 
-  /* ── PROJECT HOVER PREVIEW ── */
-  var pp    = document.getElementById('pp');
-  var ppUrl = document.getElementById('ppUrl');
-
-  document.querySelectorAll('.proj-card').forEach(function (card) {
-    card.addEventListener('mouseenter', function () {
-      if (!card.dataset.url) return;
-      ppUrl.textContent = card.dataset.label || '';
-      pp.classList.add('show');
-    });
-
-    card.addEventListener('mouseleave', function () { pp.classList.remove('show'); });
-    card.addEventListener('click', function (e) {
-      if (e.target.closest('a')) return;
-      if (card.dataset.url) window.open(card.dataset.url, '_blank', 'noopener');
-    });
-  });
-
-  document.addEventListener('mousemove', function (e) {
-    pp.style.left = Math.min(e.clientX + 14, window.innerWidth  - 238) + 'px';
-    pp.style.top  = Math.min(e.clientY + 10, window.innerHeight - 110) + 'px';
-  });
-
-
   /* ── SKILL TOOLTIPS ── */
   var skillDescriptions = {
     'TypeScript': 'Main language across frontend and backend — LexiSpark, Online Judge, EpiQ.',
     'JavaScript': 'The runtime underneath everything I ship to the browser.',
     'Bun': 'Runtime and toolchain for LexiSpark — fast installs, fast server.',
-    'React': 'Daily driver at EpiQ and NomadCodes, and in every personal project.',
+    'React': 'Used for the EpiQ frontend and my personal projects.',
     'Tailwind CSS': 'Utility-first styling for quick, consistent interfaces.',
-    'Ant Design': 'Component system for the interfaces I build at NomadCodes.',
+    'Ant Design': 'Component library I use to build forms, tables, and other React interfaces.',
     'shadcn/ui': 'Component layer of LexiSpark.',
     'NestJS': 'Backend of Online Judge — modules, REST API, Judge0 integration.',
     'ElysiaJS': 'Bun-native backend framework behind LexiSpark.',
-    'REST APIs': 'Connecting UI components to application data at NomadCodes and EpiQ.',
+    'REST APIs': 'Connecting UI components to application data at EpiQ.',
     'PostgreSQL': 'Storage for Online Judge problems, submissions and users.',
     'Docker': 'Docker Compose orchestration for the Online Judge stack.',
     'Git': 'Version control across every project.',
@@ -2175,6 +2010,7 @@ if (heroView) {
 
 function resize(view) {
   var rect = view.host.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
   var cell = probe.getBoundingClientRect();
   var scale = parseFloat(getComputedStyle(view.pre).fontSize) / 8;
   var cw = (cell.width / 10) * scale || 4.8;
