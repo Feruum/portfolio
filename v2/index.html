@@ -100,6 +100,33 @@
       color: var(--bg);
     }
 
+    #cursor-trail {
+      position: fixed;
+      inset: 0;
+      z-index: 650;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    #cursor-trail canvas, .cursor-lens {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+    .cursor-lens {
+      width: 76px;
+      height: 42px;
+      border-radius: 50%;
+      backdrop-filter: blur(1px) saturate(1.5);
+      mask-image: radial-gradient(ellipse closest-side, #000 35%, transparent);
+    }
+    @supports (backdrop-filter: url(#cursor-refraction)) {
+      .cursor-lens { backdrop-filter: url(#cursor-refraction) saturate(1.5); }
+    }
+    @media print, (prefers-reduced-motion: reduce), (forced-colors: active) {
+      #cursor-trail { display: none; }
+    }
+
     :focus-visible {
       outline: 1px solid var(--sky);
       outline-offset: 3px;
@@ -1319,6 +1346,16 @@
 </head>
 <body>
 
+<div id="cursor-trail" aria-hidden="true" inert hidden>
+  <svg width="0" height="0" focusable="false" aria-hidden="true">
+    <defs><filter id="cursor-refraction" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".035 .065" numOctaves="1" seed="4" result="ripples"/>
+      <feDisplacementMap in="SourceGraphic" in2="ripples" scale="13" xChannelSelector="R" yChannelSelector="G"/>
+    </filter></defs>
+  </svg>
+  <span class="cursor-lens" hidden></span>
+  <canvas></canvas>
+</div>
 <span class="ascii-probe" id="asciiProbe">MMMMMMMMMM</span>
 
 <!-- Skill tooltip -->
@@ -1686,6 +1723,7 @@
      JAVASCRIPT
 ════════════════════════════════════ -->
 <script src="./skill-logos.js"></script>
+<script src="./cursor-trail.js" defer></script>
 <script>
 (function () {
 
@@ -1956,7 +1994,7 @@ import { createKnotSculpture } from './knot-sculpture.js';
 var RAMP = ' .,:;-=+*cox%#@';
 var RAMP_LIGHT = '  ..,::;--==++*';
 var motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-var heroInput = window.matchMedia('(min-width: 1101px) and (hover: hover) and (pointer: fine)');
+var wideHero = window.matchMedia('(min-width: 1101px)');
 var reduceMotion = motionPreference.matches;
 
 var renderer;
@@ -2144,7 +2182,7 @@ if (heroView) {
     clearPointer();
     knot.reset();
     heroView.tiltX = heroView.tiltY = heroView.vx = 0;
-    heroView.idleSpin = heroInput.matches ? .0045 : .007;
+    heroView.idleSpin = wideHero.matches ? .0045 : .007;
     heroView.vy = reduceMotion ? 0 : heroView.idleSpin;
     host.disabled = false;
     host.removeAttribute('aria-hidden');
@@ -2157,22 +2195,30 @@ if (heroView) {
   host.addEventListener('pointerdown', function (e) {
     if (!e.isPrimary || e.button !== 0) return;
     dragged = false;
-    if (!heroInput.matches || e.pointerType === 'touch') return;
     down = { id: e.pointerId, x: e.clientX, y: e.clientY, lastX: e.clientX, lastY: e.clientY };
-    host.setPointerCapture(e.pointerId);
+    if (e.pointerType !== 'touch') host.setPointerCapture(e.pointerId);
+  });
+  document.addEventListener('pointermove', function (e) {
+    if (!heroView.visible || reduceMotion || !e.isPrimary || e.pointerType === 'touch') return;
+    heroView.tTiltY = (e.clientX / window.innerWidth - .5) * 1.2;
+    heroView.tTiltX = (e.clientY / window.innerHeight - .5) * .7;
+  }, { passive: true });
+  document.addEventListener('pointerout', function (e) {
+    if (!e.relatedTarget) clearPointer();
   });
   host.addEventListener('pointermove', function (e) {
-    if (!heroInput.matches || !e.isPrimary || e.pointerType === 'touch' || !heroView.gridWidth) return;
-    if (!reduceMotion) {
-      const x = e.offsetX / heroView.gridWidth * 2 - 1;
-      const y = 1 - e.offsetY / heroView.gridHeight * 2;
-      heroView.tTiltX = -y * .18;
-      heroView.tTiltY = x * .18;
-      knot.movePointer(x, y);
+    if (!e.isPrimary || !heroView.gridWidth) return;
+    if (down && down.id !== e.pointerId) return;
+    const touch = e.pointerType === 'touch';
+    if (touch && !down) return;
+    if (down && !dragged) {
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      if (Math.hypot(dx, dy) < 5) return;
+      dragged = true;
+      if (touch && Math.abs(dy) >= Math.abs(dx)) { down = null; return; }
     }
-    if (!down || down.id !== e.pointerId) return;
-    if (!dragged && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 5) return;
-    dragged = true;
+    if (!reduceMotion) knot.movePointer(2 * e.offsetX / heroView.gridWidth - 1, 1 - 2 * e.offsetY / heroView.gridHeight);
+    if (!down) return;
     heroView.vy = (e.clientX - down.lastX) * .006;
     heroView.vx = (e.clientY - down.lastY) * .006;
     heroView.ry += heroView.vy;
@@ -2181,7 +2227,12 @@ if (heroView) {
     down.lastY = e.clientY;
     kick();
   });
-  host.addEventListener('lostpointercapture', function () { down = null; });
+  function releaseDrag(e) {
+    if (down && down.id === e.pointerId) down = null;
+    if (e.pointerType === 'touch') knot.leavePointer();
+  }
+  host.addEventListener('pointerup', releaseDrag);
+  host.addEventListener('lostpointercapture', releaseDrag);
   host.addEventListener('pointerleave', clearPointer);
   host.addEventListener('pointercancel', clearPointer);
   host.addEventListener('click', function (e) {
@@ -2191,7 +2242,7 @@ if (heroView) {
     kick();
   });
   heroView.isDragging = function () { return down !== null; };
-  heroInput.addEventListener('change', configureInput);
+  wideHero.addEventListener('change', configureInput);
   motionPreference.addEventListener('change', configureInput);
   configureInput();
 }
@@ -2258,7 +2309,7 @@ function frame(time) {
     any = true;
     if (v === heroView) {
       var elapsed = t - lastHeroFrame;
-      var capped = !heroInput.matches || (!v.built.knot.active && !v.isDragging());
+      var capped = !wideHero.matches || (!v.built.knot.active && !v.isDragging());
       if (!reduceMotion && capped && elapsed < 1 / 30 - .001) return;
       var steps = Math.min(3, elapsed * 60);
       lastHeroFrame = t;
