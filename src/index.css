@@ -1,0 +1,171 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ground: #151412;
+  --color-pane: #1b1a17;
+  --color-rule: #3a3731;
+  --color-rule-hi: #57524a;
+  --color-ink: #ece6da;
+  --color-dim: #a39c8e;
+  --color-mute: #7a7468;
+  --color-amber: #f4a52c;
+  --color-amber-ink: #1a1305;
+  --color-sage: #9cb59a;
+  --color-rust: #e0714f;
+
+  --font-display: 'Martian Mono Variable', ui-monospace, monospace;
+  --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-feature-settings: 'zero' 1, 'ss01' 1;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+    scroll-padding-top: 4rem;
+    color-scheme: dark;
+  }
+  body {
+    background: var(--color-ground);
+    min-height: 100dvh;
+  }
+  ::selection {
+    background: var(--color-amber);
+    color: var(--color-amber-ink);
+  }
+  :focus-visible {
+    outline: 1px solid var(--color-amber);
+    outline-offset: 3px;
+  }
+  a {
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-rule-hi) var(--color-ground);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* A pane: box-drawing frame with its title cut into the top rule. */
+.pane {
+  position: relative;
+  border: 1px solid var(--color-rule);
+  background: var(--color-pane);
+  transition: border-color 220ms var(--ease-out);
+}
+.pane[data-active='true'] {
+  border-color: var(--color-amber);
+}
+.pane-title {
+  position: absolute;
+  top: -0.7em;
+  left: 1rem;
+  padding: 0 0.5rem;
+  background: var(--color-ground);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--color-dim);
+  transition:
+    background-color 220ms var(--ease-out),
+    color 220ms var(--ease-out);
+}
+.pane[data-active='true'] .pane-title {
+  background: var(--color-amber);
+  color: var(--color-amber-ink);
+}
+
+/* Key-hint button: [K] label */
+.key-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem 0.6rem 0.6rem;
+  border: 1px solid var(--color-rule-hi);
+  color: var(--color-ink);
+  font-size: 0.875rem;
+  transition:
+    transform 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.key-btn kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.3rem;
+  background: var(--color-rule);
+  color: var(--color-amber);
+  font-family: inherit;
+  font-size: 0.75rem;
+  transition:
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .key-btn:hover {
+    border-color: var(--color-amber);
+  }
+  .key-btn:hover kbd {
+    background: var(--color-amber);
+    color: var(--color-amber-ink);
+  }
+}
+.key-btn:active,
+.key-btn[data-pressed='true'] {
+  transform: scale(0.97);
+}
+.key-btn[data-primary='true'] {
+  background: var(--color-amber);
+  border-color: var(--color-amber);
+  color: var(--color-amber-ink);
+}
+.key-btn[data-primary='true'] kbd {
+  background: var(--color-amber-ink);
+  color: var(--color-amber);
+}
+
+/* Blinking block cursor, step-timed like a real terminal. */
+.cursor::after {
+  content: '';
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  margin-left: 0.15em;
+  vertical-align: -0.15em;
+  background: var(--color-amber);
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor::after {
+    animation: none;
+  }
+}
+
+.ascii-render {
+  font-family: var(--font-mono);
+  color: var(--color-amber);
+  user-select: none;
+}
+.ascii-render table {
+  font-family: inherit !important;
+}

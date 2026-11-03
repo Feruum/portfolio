@@ -1,0 +1,53 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "v2/index.html"
+        ],
+        "createdAt": "2026-11-03T18:49:50.874Z",
+        "reason": "Maintainer review: the four project thumbnails use full-bleed ASCII art, and their floating text labels are inset 8px vertically and 9.6px horizontally."
+      },
+      {
+        "rule": "tight-leading",
+        "value": "*",
+        "files": [
+          "v2/index.html"
+        ],
+        "createdAt": "2026-11-03T18:49:50.964Z",
+        "reason": "Maintainer review: the reported 1.2 line height belongs to the preformatted ASCII podium, whose rows form one diagram."
+      },
+      {
+        "rule": "overused-font",
+        "value": "instrument serif",
+        "files": [
+          "v2/index.html"
+        ],
+        "createdAt": "2026-11-03T18:49:51.053Z",
+        "reason": "Maintainer review: Instrument Serif is the deliberate display face for the name and numerical accents. Body copy uses DM Sans."
+      },
+      {
+        "rule": "pulsing-dot",
+        "value": "*",
+        "files": [
+          "v2/index.html"
+        ],
+        "createdAt": "2026-11-03T18:49:51.129Z",
+        "reason": "User confirmed keeping the animated status dot on this portfolio."
+      },
+      {
+        "rule": "marquee",
+        "value": "*",
+        "files": [
+          "v2/index.html"
+        ],
+        "createdAt": "2026-11-03T18:49:51.207Z",
+        "reason": "User confirmed keeping the scrolling technology ticker on this portfolio."
+      }
+    ]
+  }
+}
