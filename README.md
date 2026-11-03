@@ -1,6 +1,8 @@
 # Madi Talgat — portfolio
 
-The default homepage is the light portfolio. A blue and pink trail follows the pointer across the page. Moving over the first screen turns the ASCII knot. Sweep through it to push its links, click to scatter them, or drag to spin it. On phones, tap to scatter or swipe horizontally on the knot to turn it. The knot also responds to Enter or Space when focused. Hover, focus, or tap a skill to see its logo and description. The original dark terminal portfolio is available at `/classic.html`.
+The default homepage is the light portfolio. Sweep the mouse or pen across the name or a paragraph: the letters bend like ink seen through moving water. Reverse direction to send a second ripple back through the first, or stop to let the text settle. Reduced-motion mode keeps the text still.
+
+Moving over the first screen also turns the ASCII knot. Sweep through it to push its links, click to scatter them, or drag to spin it. On phones, tap to scatter or swipe horizontally on the knot to turn it. The knot also responds to Enter or Space when focused. Hover, focus, or tap a skill to see its logo and description. The original dark terminal portfolio is available at `/classic.html`.
 
 The moon button in the top right switches the homepage to its black palette. The new theme spreads from the click, or from the button center when using a keyboard. The choice is saved locally. Reduced-motion mode switches instantly.
 

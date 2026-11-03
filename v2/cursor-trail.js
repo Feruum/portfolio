@@ -1,13 +1,15 @@
+import { createWaterWake } from './water-wake.js';
+
 (() => {
   const layer = document.getElementById('cursor-trail');
   const canvas = layer.querySelector('canvas');
-  const lens = layer.querySelector('.cursor-lens');
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
   // Move a small drawing surface with the pointer instead of repainting the viewport.
-  const size = 504, reach = 222, lifetime = 420;
+  const size = 504, reach = 222, lifetime = 540;
   const quiet = matchMedia('(prefers-reduced-motion: reduce), (forced-colors: active)');
+  const water = createWaterWake(document.getElementById('water-template'));
   const points = [];
   let x = 0, y = 0, targetX = 0, targetY = 0, distance = 0;
   let kind = '', action = false, touching = false, pulse = null;
@@ -18,6 +20,7 @@
     if (!kind && !frame && layer.hidden) return;
     cancelAnimationFrame(frame);
     frame = 0;
+    water.reset();
     if (!layer.hidden) {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -26,7 +29,7 @@
     touching = false;
     pulse = null;
     points.length = 0;
-    layer.hidden = lens.hidden = true;
+    layer.hidden = true;
   }
 
   function follow(px, py, type, target) {
@@ -36,6 +39,7 @@
     }
     const now = performance.now();
     if (kind !== type || layer.hidden) {
+      water.reset();
       x = px;
       y = py;
       distance = 0;
@@ -110,6 +114,7 @@
     }
     while (points.length && (points.length > 38 || distance - points[0].distance > reach || now - points[0].time > lifetime)) points.shift();
 
+    const settling = kind !== 'touch' && water.draw(x, y, dx, dy, dt);
     const left = Math.round(x) - size / 2, top = Math.round(y) - size / 2;
     canvas.style.transform = 'translate3d(' + left + 'px,' + top + 'px,0)';
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -125,31 +130,27 @@
         p.nx = -vy / span;
         p.ny = vx / span;
         const belly = Math.sin(Math.PI * (p.distance - tail.distance) / length);
-        p.width = (.5 + Math.max(0, belly) * (4 + 7 * p.speed)) * Math.min(1, length / 23);
-        p.fold = belly * Math.sin((distance - p.distance) / 24) * (2 + p.speed * 3);
+        p.width = (.5 + Math.max(0, belly) * (6 + 10 * p.speed)) * Math.min(1, length / 23);
+        p.fold = belly * Math.sin((distance - p.distance) / 32) * (2 + p.speed * 4);
       }
       const ink = ctx.createLinearGradient(tail.x, tail.y, x + .01, y);
       ink.addColorStop(0, 'transparent');
       ink.addColorStop(.27, pink);
       ink.addColorStop(.72, blue);
       ink.addColorStop(1, blue);
-      ribbon(1.45, 0, ink, .19 * fade);
-      ribbon(.66, -.15, ink, .78 * fade);
-      ribbon(.13, .90, pink, .8 * fade);
+      // Two glints catch the edge of the clear wake without painting over the letters.
+      const gleam = fade * (kind === 'touch' ? 1 : .72);
+      ribbon(1, 0, ink, .075 * gleam);
+      ribbon(.075, -.72, ink, .56 * gleam);
+      ribbon(.055, .88, pink, .46 * gleam);
     }
 
-    const hideLens = kind === 'touch' || speed < .08;
-    if (lens.hidden !== hideLens) lens.hidden = hideLens;
-    if (!hideLens) {
-      lens.style.transform = 'translate3d(' + (x - 38) + 'px,' + (y - 21) + 'px,0) rotate(' + Math.atan2(dy, dx) + 'rad)';
-      lens.style.opacity = String(Math.min(1, speed * 1.5));
-    }
-    if (kind !== 'touch' || touching) {
+    if ((action || touching) && fade > 0) {
       ctx.beginPath();
-      ctx.arc(x, y, (action ? 12 : 7.5) + speed * 2, 0, Math.PI * 2);
+      ctx.arc(x, y, 6 + speed * 2, 0, Math.PI * 2);
       ctx.strokeStyle = action ? pink : blue;
-      ctx.lineWidth = 1.35;
-      ctx.globalAlpha = .43 + fade * .4;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = .36 * fade;
       ctx.stroke();
     }
     if (pulse) {
@@ -162,8 +163,8 @@
       ctx.stroke();
       if (t >= 1) pulse = null;
     }
-    if (fade > 0 || step > .3 || pulse) frame = requestAnimationFrame(draw);
-    else if (kind === 'touch' && !touching) clear();
+    if (fade > 0 || step > .3 || pulse || settling) frame = requestAnimationFrame(draw);
+    else if (!touching) clear();
   }
 
   document.addEventListener('pointermove', e => {

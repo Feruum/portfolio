@@ -10,7 +10,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232440ff'/%3E%3Ctext x='4' y='23' font-family='monospace' font-size='17' font-weight='700' fill='%23ffffff'%3E%3E_%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@0,900;1,900&family=Syne:wght@800;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 
   <style>
 
@@ -107,24 +107,15 @@
       overflow: hidden;
       pointer-events: none;
     }
-    #cursor-trail canvas, .cursor-lens {
+    #cursor-trail canvas, .water-maps {
       position: absolute;
       top: 0;
       left: 0;
       pointer-events: none;
     }
-    .cursor-lens {
-      width: 76px;
-      height: 42px;
-      border-radius: 50%;
-      backdrop-filter: blur(1px) saturate(1.5);
-      mask-image: radial-gradient(ellipse closest-side, #000 35%, transparent);
-    }
-    @supports (backdrop-filter: url(#cursor-refraction)) {
-      .cursor-lens { backdrop-filter: url(#cursor-refraction) saturate(1.5); }
-    }
     @media print, (prefers-reduced-motion: reduce), (forced-colors: active) {
       #cursor-trail { display: none; }
+      [style*="water-ink-"] { filter: none !important; }
     }
 
     :focus-visible {
@@ -394,124 +385,6 @@
     }
 
     .hero-name .last { color: var(--sky); font-style: italic; }
-
-    /* glitch layers */
-    .name-inner {
-      display: block;
-      transition: opacity .12s ease;
-    }
-
-    .hero-name a.glitching .name-inner {
-      opacity: 0;
-    }
-
-    .glitch-wrap {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      line-height: .88;
-      pointer-events: none;
-      opacity: 0;
-    }
-
-    .hero-name a.glitching .glitch-wrap {
-      opacity: 1;
-    }
-
-    .gf {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      display: block;
-      opacity: 0;
-      color: var(--ink);
-    }
-
-    .gf1 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      clip-path: inset(0 0 55% 0);
-      color: var(--gold);
-      text-shadow: -2px 0 var(--sky);
-    }
-
-    .gf2 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 900;
-      clip-path: inset(22% 0 38% 0);
-      transform: translateX(-2px);
-    }
-
-    .gf3 {
-      font-family: 'DM Mono', monospace;
-      font-weight: 500;
-      letter-spacing: -.04em;
-      clip-path: inset(42% 0 20% 0);
-      transform: translateX(3px);
-      color: var(--sky);
-    }
-
-    .gf4 {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      letter-spacing: .08em;
-      clip-path: inset(65% 0 5% 0);
-      transform: translateX(-2px);
-    }
-
-    @keyframes gfburst {
-      0%   { opacity: 0; }
-      8%   { opacity: .9; transform: translateX(-3px); }
-      18%  { opacity: 0;  transform: translateX(2px);  }
-      30%  { opacity: .7; }
-      42%  { opacity: 0;  }
-      54%  { opacity: .5; transform: translateX(-1px); }
-      68%  { opacity: 0;  }
-      100% { opacity: 0;  }
-    }
-
-    .hero-name a.glitching .gf1 { animation: gfburst .65s ease-out 0s    forwards; }
-    .hero-name a.glitching .gf2 { animation: gfburst .65s ease-out .06s  forwards; }
-    .hero-name a.glitching .gf3 { animation: gfburst .65s ease-out .12s  forwards; }
-    .hero-name a.glitching .gf4 { animation: gfburst .65s ease-out .18s  forwards; }
-
-    .gf-final {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      display: block;
-      opacity: 0;
-      color: var(--ink);
-      transition: opacity .3s ease;
-    }
-
-    .hero-name a.settled .gf-final {
-      opacity: 1;
-    }
-
-    /* while glitching, the name dissolves into ASCII noise for a beat */
-    .hero-name a::after {
-      content: attr(data-noise);
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      font-family: 'DM Mono', monospace;
-      font-size: .09em;
-      line-height: 1.1;
-      color: var(--sky);
-      white-space: pre-wrap;
-      word-break: break-all;
-      overflow: hidden;
-      opacity: 0;
-      transition: opacity .2s;
-    }
-
-    .hero-name a.glitching::after {
-      opacity: .35;
-    }
 
     .hero-sub {
       display: flex;
@@ -1346,14 +1219,20 @@
 </head>
 <body>
 
+<svg class="water-maps" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="water-template" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" x="-32" y="-32" color-interpolation-filters="sRGB">
+      <feFlood flood-color="rgb(50% 50% 0%)" result="still"/>
+      <feImage preserveAspectRatio="none"/>
+      <feColorMatrix result="wake"/>
+      <feImage preserveAspectRatio="none"/>
+      <feColorMatrix result="crest"/>
+      <feMerge result="field"><feMergeNode in="still"/><feMergeNode in="wake"/><feMergeNode in="crest"/></feMerge>
+      <feDisplacementMap in="SourceGraphic" in2="field" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
 <div id="cursor-trail" aria-hidden="true" inert hidden>
-  <svg width="0" height="0" focusable="false" aria-hidden="true">
-    <defs><filter id="cursor-refraction" color-interpolation-filters="sRGB">
-      <feTurbulence type="fractalNoise" baseFrequency=".035 .065" numOctaves="1" seed="4" result="ripples"/>
-      <feDisplacementMap in="SourceGraphic" in2="ripples" scale="13" xChannelSelector="R" yChannelSelector="G"/>
-    </filter></defs>
-  </svg>
-  <span class="cursor-lens" hidden></span>
   <canvas></canvas>
 </div>
 <span class="ascii-probe" id="asciiProbe">MMMMMMMMMM</span>
@@ -1429,14 +1308,7 @@
 
       <h1 class="hero-name">
         <a href="https://github.com/Feruum" target="_blank" rel="noopener" id="heroName">
-          <span class="name-inner">Madi<br><span class="last">Talgat</span></span>
-          <span class="glitch-wrap" aria-hidden="true">
-            <span class="gf gf1">Madi<br>Talgat</span>
-            <span class="gf gf2">Madi<br>Talgat</span>
-            <span class="gf gf3">Madi<br>Talgat</span>
-            <span class="gf gf4">Madi<br>Talgat</span>
-            <span class="gf-final" id="gfFinal">Madi<br>Talgat</span>
-          </span>
+          Madi<br><span class="last">Talgat</span>
         </a>
       </h1>
 
@@ -1723,7 +1595,7 @@
      JAVASCRIPT
 ════════════════════════════════════ -->
 <script src="./skill-logos.js"></script>
-<script src="./cursor-trail.js" defer></script>
+<script type="module" src="./cursor-trail.js"></script>
 <script>
 (function () {
 
@@ -1813,53 +1685,6 @@
       var el = document.getElementById('wxTemp');
       if (el) el.textContent = '— °C';
     });
-
-
-  /* ── GLITCH ── */
-  var gFonts = [
-    { f: "'Playfair Display',serif", s: 'italic', w: '900', l: 'normal' },
-    { f: "'Syne',sans-serif",        s: 'normal', w: '900', l: '.04em'  },
-    { f: "'DM Mono',monospace",      s: 'normal', w: '400', l: '-.02em' },
-    { f: "'DM Sans',sans-serif",     s: 'italic', w: '300', l: '.06em'  },
-  ];
-  var NOISE = '01<>/\\{}[]=+*#%@&$;:.';
-
-  var lastF  = -1;
-  var hLink  = document.getElementById('heroName');
-  var gFinal = document.getElementById('gfFinal');
-  var gTimer = null;
-
-  function noise(n) {
-    var s = '';
-    for (var i = 0; i < n; i++) s += NOISE[(Math.random() * NOISE.length) | 0];
-    return s;
-  }
-
-  if (hLink) {
-    hLink.addEventListener('mouseenter', function () {
-      clearTimeout(gTimer);
-      hLink.classList.remove('settled');
-      hLink.setAttribute('data-noise', noise(900));
-
-      var idx;
-      do { idx = Math.floor(Math.random() * gFonts.length); } while (idx === lastF);
-      lastF = idx;
-
-      var f = gFonts[idx];
-      gFinal.style.fontFamily    = f.f;
-      gFinal.style.fontStyle     = f.s;
-      gFinal.style.fontWeight    = f.w;
-      gFinal.style.letterSpacing = f.l;
-
-      hLink.classList.add('glitching');
-      gTimer = setTimeout(function () { hLink.classList.add('settled'); }, 700);
-    });
-
-    hLink.addEventListener('mouseleave', function () {
-      clearTimeout(gTimer);
-      hLink.classList.remove('glitching', 'settled');
-    });
-  }
 
 
   /* ── SKILL TOOLTIPS ── */
