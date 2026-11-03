@@ -1898,6 +1898,16 @@
     skTip.classList.remove('show');
   }
 
+  function anchorSkillTip() {
+    if (!activeChip) return;
+    var rect = activeChip.getBoundingClientRect();
+    if (rect.bottom <= 0 || rect.top >= window.innerHeight) {
+      hideSkillTip();
+      return;
+    }
+    placeSkillTip(rect.left + rect.width / 2, rect.bottom);
+  }
+
   document.querySelectorAll('.sk-chip').forEach(function (chip) {
     var label = chip.textContent.trim();
 
@@ -1914,8 +1924,7 @@
       if (event.type === 'pointerenter') {
         placeSkillTip(event.clientX, event.clientY);
       } else {
-        var rect = chip.getBoundingClientRect();
-        placeSkillTip(rect.left + rect.width / 2, rect.bottom);
+        anchorSkillTip();
       }
     }
 
@@ -1941,8 +1950,8 @@
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') hideSkillTip();
   });
-  window.addEventListener('resize', hideSkillTip);
-  window.addEventListener('scroll', hideSkillTip, { passive: true });
+  window.addEventListener('resize', anchorSkillTip);
+  window.addEventListener('scroll', anchorSkillTip, { passive: true });
 
 
   /* ── SCROLL REVEAL ── */
