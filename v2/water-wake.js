@@ -10,13 +10,13 @@ function pressureTexture() {
     for (let x = 0; x < size; x++) {
       const u = (2 * x + 1) / size - 1, v = (2 * y + 1) / size - 1;
       const r2 = u * u + v * v, r = Math.sqrt(r2);
-      // A convex centre swells the strokes; the returning lip bends them back.
-      const slope = .56 * Math.exp(-(((r - .72) / .18) ** 2)) - 1.42 * Math.exp(-3.7 * r2);
-      const edge = Math.max(0, Math.min(1, (1 - r) / .32));
+      // A broad, shallow lip bends thin strokes without folding them back on themselves.
+      const slope = .18 * Math.exp(-(((r - .72) / .27) ** 2)) - .78 * Math.exp(-2.9 * r2);
+      const edge = Math.max(0, Math.min(1, (1 - r) / .40));
       const i = (y * size + x) * 4;
       image.data[i] = 255 * (.5 + u * slope);
       image.data[i + 1] = 255 * (.5 + v * slope);
-      image.data[i + 2] = 255 * Math.exp(-3.8 * r2);
+      image.data[i + 2] = 255 * Math.exp(-3 * r2);
       image.data[i + 3] = 255 * edge * edge * (3 - 2 * edge);
     }
   }
@@ -88,8 +88,8 @@ export function createWaterWake(template) {
       return false;
     }
 
-    const w = Math.round(106 + 62 * energy + 42 * Math.abs(flowX));
-    const h = Math.round(92 + 38 * energy + 42 * Math.abs(flowY));
+    const w = Math.round(114 + 66 * energy + 40 * Math.abs(flowX));
+    const h = Math.round(106 + 46 * energy + 36 * Math.abs(flowY));
     const ww = Math.round(w * .92), wh = Math.round(h * .82);
     const headLeft = x - w / 2, headTop = y - h / 2;
     const rearLeft = rearX - ww / 2, rearTop = rearY - wh / 2;
@@ -121,7 +121,7 @@ export function createWaterWake(template) {
       place(slot.images[1], headLeft - box.left, headTop - box.top, w, h);
       slot.matrices[0].setAttribute('values', rearMatrix);
       slot.matrices[1].setAttribute('values', headMatrix);
-      slot.warp.setAttribute('scale', (energy * (el.id === 'heroName' ? 74 : 40)).toFixed(1));
+      slot.warp.setAttribute('scale', (energy * (el.id === 'heroName' ? 65 : 40)).toFixed(1));
     }
     return true;
   }
