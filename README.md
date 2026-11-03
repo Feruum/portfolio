@@ -1,10 +1,13 @@
 # Madi Talgat — portfolio
 
-The default homepage is the light portfolio with an interactive ASCII sculpture and technology logos in the Skills tooltips. Hover, focus, or tap a skill to see its mark and description. The original dark terminal portfolio is available at `/classic.html`.
+The default homepage is the light portfolio. Sweep the mouse through the ASCII knot to push its links, click to scatter them, or drag to spin it. On phones it rotates beside the name and scatters on tap. The knot also responds to Enter or Space when focused. Hover, focus, or tap a skill to see its logo and description. The original dark terminal portfolio is available at `/classic.html`.
+
+The moon button in the top right switches the homepage to its black palette. The new theme spreads from the click, or from the button center when using a keyboard. The choice is saved locally. Reduced-motion mode switches instantly.
 
 ```sh
 bun install
 bun run dev       # http://localhost:5173
+bun test          # sculpture interactions and framing
 bun run build     # both editions in dist/
 bun run preview   # serve the production build
 ```

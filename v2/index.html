@@ -6,6 +6,7 @@
   <title>Madi Talgat</title>
   <meta name="description" content="Madi Talgat — full-stack developer (React & TypeScript) in Astana. EpiQ, LexiSpark, Online Judge.">
   <meta name="theme-color" content="#ffffff">
+  <script src="./theme.js"></script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232440ff'/%3E%3Ctext x='4' y='23' font-family='monospace' font-size='17' font-weight='700' fill='%23ffffff'%3E%3E_%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,6 +32,9 @@
       --light:  #5f6278;
       --border: #e3e5ef;
       --off:    #eef0f8;
+      --nav-bg: rgba(255, 255, 255, .92);
+      --on-blue: #ffffff;
+      --tip-shadow: rgba(13, 14, 40, .14);
 
       --sky:  #2440ff;
       --gold: #ff2e93;
@@ -45,10 +49,43 @@
       --t:  #b5f1f5;
     }
 
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #08090b;
+      --panel: #111318;
+      --ink: #f1f1f6;
+      --mid: #c4c6d4;
+      --light: #a3a7ba;
+      --border: #353945;
+      --off: #191d28;
+      --nav-bg: rgba(8, 9, 11, .94);
+      --on-blue: #0a1020;
+      --tip-shadow: rgba(0, 0, 0, .55);
+      --sky: #9aa7ff;
+      --gold: #ff71b5;
+      --y: #374312;
+      --g: #183d2e;
+      --b: #263566;
+      --pk: #50243d;
+      --o: #50361f;
+      --pu: #3d2e58;
+      --r: #512e39;
+      --t: #193d44;
+    }
+
+    :root[data-theme="dark"] .hl { color: var(--ink); }
+    :root[data-theme="dark"] .ticker-group img:is([src$="/bun.svg"], [src$="/shadcnui.svg"], [src$="/modelcontextprotocol.svg"]) {
+      filter: invert(1);
+    }
+    :root[data-theme="dark"] .ticker-group img:is([src$="/postgresql.svg"], [src$="/yolo.svg"]) {
+      filter: brightness(1.65);
+    }
+
     /* ── BASE ── */
     html {
       scroll-behavior: smooth;
       color-scheme: light;
+      background: var(--bg);
     }
 
     body {
@@ -491,18 +528,26 @@
       right: -4rem;
       width: min(50%, 560px);
       height: calc(100% - 3rem);
+      border: 0;
+      padding: 0;
+      background: transparent;
+      text-align: left;
+      user-select: none;
       cursor: grab;
-      touch-action: none;
+      touch-action: pan-y;
       opacity: 0;
       animation: fadeup .9s .25s forwards;
     }
 
     .hero-3d:active { cursor: grabbing; }
+    .hero-3d:disabled { cursor: default; touch-action: auto; }
+    .hero-3d:disabled .frame-hint { display: none; }
     .hero-3d .ascii { font-size: 10px; }
     .hero-3d .ascii-hi { color: var(--gold); }
 
     .frame-hint {
       position: absolute;
+      pointer-events: none;
       right: 4.5rem;
       bottom: .2rem;
       font-family: 'DM Mono', monospace;
@@ -579,10 +624,10 @@
     .btn-primary {
       background: var(--sky);
       border-color: var(--sky);
-      color: #ffffff;
+      color: var(--on-blue);
     }
 
-    .btn-primary:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+    .btn-primary:hover { background: var(--gold); border-color: var(--gold); color: #0d0e1a; }
 
 
     /* ─────────────────────────────────────────
@@ -943,7 +988,7 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       overflow: hidden;
-      box-shadow: 0 10px 36px rgba(13, 14, 40, .14);
+      box-shadow: 0 10px 36px var(--tip-shadow);
       pointer-events: none;
       opacity: 0;
       transform: scale(.94) translateY(4px);
@@ -1054,21 +1099,64 @@
 
 
     /* ─────────────────────────────────────────
-       MOBILE NAV
+       THEME SWITCH + MOBILE NAV
     ───────────────────────────────────────── */
     .topnav {
-      display: none;
+      display: flex;
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 1rem;
+      right: 1.4rem;
       z-index: 50;
-      background: rgba(255, 255, 255, .92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      padding: .9rem 1.4rem;
       align-items: center;
       gap: 1rem;
+    }
+
+    @media (min-width: 861px) {
+      .topnav > :not(.theme-toggle) { display: none; }
+    }
+
+    .theme-toggle {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      flex: none;
+      background: var(--bg);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .theme-toggle:hover { color: var(--sky); border-color: currentColor; }
+    .theme-toggle[hidden], .theme-sun { display: none; }
+    [data-theme="dark"] .theme-sun { display: block; }
+    [data-theme="dark"] .theme-moon { display: none; }
+
+    .theme-waving::view-transition { pointer-events: none; }
+    .theme-waving::view-transition-group(root),
+    .theme-waving::view-transition-old(root) { animation: none; }
+    .theme-waving::view-transition-image-pair(root) { isolation: isolate; }
+    .theme-waving::view-transition-old(root) { z-index: 1; mix-blend-mode: normal; }
+    .theme-waving::view-transition-new(root) {
+      z-index: 2;
+      mix-blend-mode: normal;
+      animation: theme-reveal .52s cubic-bezier(.33, 0, .2, 1) both;
+    }
+    @keyframes theme-reveal {
+      from { clip-path: circle(0px at var(--wave-origin)); }
+      to { clip-path: circle(var(--wave-radius) at var(--wave-origin)); }
+    }
+    .theme-ripple {
+      position: fixed;
+      z-index: 700;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle closest-side, transparent 78%, var(--sky) 95%, transparent);
+      animation: theme-ring .52s cubic-bezier(.33, 0, .2, 1) both;
+    }
+    @keyframes theme-ring {
+      from { transform: scale(.01); opacity: .32; }
+      to { transform: scale(1); opacity: 0; }
     }
 
     .topnav-github {
@@ -1090,9 +1178,14 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 2px;
+      width: 44px;
+      height: 44px;
+      flex: none;
+      margin-right: -.5rem;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
       gap: 4px;
     }
 
@@ -1101,13 +1194,16 @@
       width: 20px;
       height: 1.5px;
       background: var(--ink);
-      transition: all .22s;
+      transition: transform .22s cubic-bezier(.23, 1, .32, 1), opacity .14s;
     }
+    .burger[aria-expanded="true"] span:first-child { transform: translateY(5.5px) rotate(45deg); }
+    .burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; transform: scaleX(.3); }
+    .burger[aria-expanded="true"] span:last-child { transform: translateY(-5.5px) rotate(-45deg); }
 
     .mob-menu {
       display: none;
       position: fixed;
-      top: 49px;
+      top: 52px;
       left: 0;
       right: 0;
       background: var(--bg);
@@ -1116,6 +1212,25 @@
       z-index: 49;
       flex-direction: column;
       gap: 0;
+      max-height: calc(100dvh - 52px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      visibility: hidden;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-8px);
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path .24s cubic-bezier(.23, 1, .32, 1),
+                  transform .24s cubic-bezier(.23, 1, .32, 1),
+                  opacity .16s ease-out, visibility 0s linear .24s;
+    }
+    .mob-menu.open {
+      visibility: visible;
+      pointer-events: auto;
+      opacity: 1;
+      transform: translateY(0);
+      clip-path: inset(0);
+      transition-delay: 0s;
     }
 
     .mob-menu a {
@@ -1138,6 +1253,7 @@
     @media (prefers-reduced-motion: reduce) {
       .ticker-track { animation: none !important; }
       .reveal { opacity: 1; transform: none; }
+      .mob-menu, .burger span { transition: none; }
     }
 
     @media (max-width: 1100px) {
@@ -1149,18 +1265,30 @@
         height: clamp(140px, 30vw, 280px);
         opacity: 1;
         animation: none;
-        pointer-events: none;
-        touch-action: auto;
+        touch-action: pan-y pinch-zoom;
+        -webkit-tap-highlight-color: transparent;
         mask-image: linear-gradient(to right, transparent, #000 30%);
       }
-      .hero-3d .ascii { opacity: .38; font-size: 7px; }
+      /* Let the knot receive taps beside the name. Text and links keep their own hit areas. */
+      .hero-text { pointer-events: none; }
+      .hero-text > :not(.hero-name), .hero-name a { pointer-events: auto; }
+      .hero-3d .ascii { opacity: .55; font-size: 7px; }
       .frame-hint { display: none; }
       .ticker { right: 0; }
     }
 
     @media (max-width: 860px) {
       .sidenav        { display: none; }
-      .topnav, .mob-menu.open { display: flex; }
+      .topnav {
+        inset: 0 0 auto;
+        height: 52px;
+        gap: .75rem;
+        padding: 0 1.4rem;
+        background: var(--nav-bg);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+      }
+      .mob-menu { display: flex; }
       main            { margin-left: 0; padding: 4.5rem 1.6rem 0; }
       #contact, .section { scroll-margin-top: 4.2rem; }
       .hero-name      { font-size: clamp(4rem, 16vw, 7rem); }
@@ -1227,13 +1355,17 @@
 <nav class="topnav" id="topnav">
   <a href="#top" class="topnav-name">Madi Talgat</a>
   <a class="topnav-github" href="https://github.com/Feruum" target="_blank" rel="noopener">GitHub ↗</a>
-  <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mobMenu">
+  <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Dark theme" aria-pressed="false" title="Switch to dark theme" hidden>
+    <svg class="theme-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.4 8.4 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z"/></svg>
+    <svg class="theme-sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+  </button>
+  <button type="button" class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobMenu">
     <span></span>
     <span></span>
     <span></span>
   </button>
 </nav>
-<div class="mob-menu" id="mobMenu">
+<div class="mob-menu" id="mobMenu" inert>
   <a href="#top">me</a>
   <a href="#contact">contact</a>
   <a href="#skills">skills</a>
@@ -1296,11 +1428,11 @@
       </address>
     </div>
 
-    <div class="hero-3d" id="hero3d" role="img" aria-label="Rotating 3D torus knot drawn in ASCII characters">
-      <pre class="ascii" data-scene="hero" aria-hidden="true"></pre>
-      <pre class="ascii ascii-hi" aria-hidden="true"></pre>
-      <span class="frame-hint">&lt;- drag -&gt;</span>
-    </div>
+    <button type="button" class="hero-3d" id="hero3d" aria-label="Scatter the ASCII knot" aria-hidden="true" disabled>
+      <span class="ascii" data-scene="hero" aria-hidden="true"></span>
+      <span class="ascii ascii-hi" aria-hidden="true"></span>
+      <span class="frame-hint" aria-hidden="true">sweep to push · click to scatter · drag to spin</span>
+    </button>
 
     <div class="ticker" aria-hidden="true">
       <div class="ticker-track">
@@ -1566,8 +1698,11 @@
   var mobMenu = document.getElementById('mobMenu');
 
   function setMenu(open) {
+    if (mobMenu.classList.contains('open') === open) return;
+    mobMenu.inert = !open;
     mobMenu.classList.toggle('open', open);
     burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
   }
 
   burger.addEventListener('click', function () {
@@ -1575,6 +1710,9 @@
   });
   document.addEventListener('click', function (event) {
     if (!burger.contains(event.target)) setMenu(false);
+  });
+  window.matchMedia('(max-width: 860px)').addEventListener('change', function (event) {
+    if (!event.matches) setMenu(false);
   });
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape' && mobMenu.classList.contains('open')) {
@@ -1813,10 +1951,13 @@
 ════════════════════════════════════ -->
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+import { createKnotSculpture } from './knot-sculpture.js';
 
 var RAMP = ' .,:;-=+*cox%#@';
 var RAMP_LIGHT = '  ..,::;--==++*';
-var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+var heroInput = window.matchMedia('(min-width: 1101px) and (hover: hover) and (pointer: fine)');
+var reduceMotion = motionPreference.matches;
 
 var renderer;
 try {
@@ -1849,14 +1990,14 @@ var SCENES = {
   hero: function () {
     var scene = baseScene();
     var camera = new THREE.PerspectiveCamera(36, 1, .1, 100);
-    camera.position.set(0, 0, 8.6);
-    var mesh = new THREE.Mesh(new THREE.TorusKnotGeometry(1.35, .42, 220, 28, 2, 3), litMaterial());
-    scene.add(mesh);
+    camera.position.set(0, 0, 9.25);
+    var knot = createKnotSculpture(THREE, litMaterial());
+    scene.add(knot.mesh);
     return {
-      scene: scene, camera: camera,
+      scene: scene, camera: camera, knot: knot,
       update: function (t, v) {
-        mesh.rotation.x = v.rx + v.tiltX;
-        mesh.rotation.y = v.ry + v.tiltY;
+        knot.mesh.rotation.set(v.rx + v.tiltX, v.ry + v.tiltY, 0);
+        if (!reduceMotion) knot.update(t, camera);
       },
     };
   },
@@ -1957,8 +2098,10 @@ var SCENES = {
 };
 
 var views = [];
+var raf = 0;
+var lastHeroFrame = 0;
 
-document.querySelectorAll('pre.ascii[data-scene]').forEach(function (pre) {
+document.querySelectorAll('.ascii[data-scene]').forEach(function (pre) {
   var make = SCENES[pre.dataset.scene];
   if (!make) return;
   var host = pre.parentElement;
@@ -1983,29 +2126,74 @@ document.querySelectorAll('pre.ascii[data-scene]').forEach(function (pre) {
   }).observe(host);
 });
 
-/* Drag + cursor tilt for the hero object. */
+/* Hover pushes nearby links. A short click scatters them; a drag rotates the knot. */
 var heroView = views.find(function (v) { return v.pre.dataset.scene === 'hero'; });
 if (heroView) {
-  var host = heroView.host, dragging = false, lx = 0, ly = 0;
+  const host = heroView.host, knot = heroView.built.knot;
+  const hint = host.querySelector('.frame-hint');
+  let down = null, dragged = false;
+  function clearPointer() {
+    knot.leavePointer();
+    heroView.tTiltX = heroView.tTiltY = 0;
+  }
+  function configureInput() {
+    reduceMotion = motionPreference.matches;
+    if (down && host.hasPointerCapture(down.id)) host.releasePointerCapture(down.id);
+    down = null;
+    dragged = false;
+    clearPointer();
+    knot.reset();
+    heroView.tiltX = heroView.tiltY = heroView.vx = 0;
+    heroView.idleSpin = heroInput.matches ? .0045 : .007;
+    heroView.vy = reduceMotion ? 0 : heroView.idleSpin;
+    host.disabled = false;
+    host.removeAttribute('aria-hidden');
+    host.setAttribute('aria-label', reduceMotion ? 'Rotate the ASCII knot' : 'Scatter the ASCII knot');
+    hint.textContent = reduceMotion ? 'click or drag to rotate' : 'sweep to push · click to scatter · drag to spin';
+    lastHeroFrame = 0;
+    draw(heroView, performance.now() / 1000);
+    kick();
+  }
   host.addEventListener('pointerdown', function (e) {
-    dragging = true; lx = e.clientX; ly = e.clientY;
+    if (!e.isPrimary || e.button !== 0) return;
+    dragged = false;
+    if (!heroInput.matches || e.pointerType === 'touch') return;
+    down = { id: e.pointerId, x: e.clientX, y: e.clientY, lastX: e.clientX, lastY: e.clientY };
     host.setPointerCapture(e.pointerId);
   });
   host.addEventListener('pointermove', function (e) {
-    var r = host.getBoundingClientRect();
-    heroView.tTiltX = ((e.clientY - r.top) / r.height - .5) * .5;
-    heroView.tTiltY = ((e.clientX - r.left) / r.width - .5) * .5;
-    if (!dragging) return;
-    heroView.vy = (e.clientX - lx) * .006;
-    heroView.vx = (e.clientY - ly) * .006;
+    if (!heroInput.matches || !e.isPrimary || e.pointerType === 'touch' || !heroView.gridWidth) return;
+    if (!reduceMotion) {
+      const x = e.offsetX / heroView.gridWidth * 2 - 1;
+      const y = 1 - e.offsetY / heroView.gridHeight * 2;
+      heroView.tTiltX = -y * .18;
+      heroView.tTiltY = x * .18;
+      knot.movePointer(x, y);
+    }
+    if (!down || down.id !== e.pointerId) return;
+    if (!dragged && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 5) return;
+    dragged = true;
+    heroView.vy = (e.clientX - down.lastX) * .006;
+    heroView.vx = (e.clientY - down.lastY) * .006;
     heroView.ry += heroView.vy;
     heroView.rx += heroView.vx;
-    lx = e.clientX; ly = e.clientY;
+    down.lastX = e.clientX;
+    down.lastY = e.clientY;
+    kick();
   });
-  function up() { dragging = false; }
-  host.addEventListener('pointerup', up);
-  host.addEventListener('pointercancel', up);
-  heroView.isDragging = function () { return dragging; };
+  host.addEventListener('lostpointercapture', function () { down = null; });
+  host.addEventListener('pointerleave', clearPointer);
+  host.addEventListener('pointercancel', clearPointer);
+  host.addEventListener('click', function (e) {
+    if (e.detail && dragged) return;
+    if (reduceMotion) heroView.ry += Math.PI / 8;
+    else knot.scatter();
+    kick();
+  });
+  heroView.isDragging = function () { return down !== null; };
+  heroInput.addEventListener('change', configureInput);
+  motionPreference.addEventListener('change', configureInput);
+  configureInput();
 }
 
 function resize(view) {
@@ -2017,8 +2205,10 @@ function resize(view) {
   var ch = cell.height * scale || 8;
   view.cols = Math.max(20, Math.floor(rect.width / cw));
   view.rows = Math.max(10, Math.floor(rect.height / ch));
+  view.gridWidth = view.cols * cw;
+  view.gridHeight = view.rows * ch;
   var camera = view.built.camera;
-  camera.aspect = (view.cols * cw) / (view.rows * ch);
+  camera.aspect = view.gridWidth / view.gridHeight;
   // Frame the rotating knot against the shorter side of its character grid.
   if (view === heroView) camera.zoom = Math.min(1, camera.aspect);
   camera.updateProjectionMatrix();
@@ -2058,34 +2248,38 @@ function draw(view, t) {
   if (view.hi) view.hi.textContent = hi;
 }
 
-var raf = 0;
-function frame() {
+function frame(time) {
   raf = 0;
-  var t = performance.now() / 1000;
+  if (document.hidden) return;
+  var t = time / 1000;
   var any = false;
   views.forEach(function (v) {
     if (!v.visible) return;
     any = true;
     if (v === heroView) {
-      if (!(v.isDragging && v.isDragging())) {
-        v.ry += v.vy; v.rx += v.vx;
-        var idle = reduceMotion ? 0 : .0045;
-        v.vy += (idle - v.vy) * .04;
-        v.vx *= .94;
+      var elapsed = t - lastHeroFrame;
+      var capped = !heroInput.matches || (!v.built.knot.active && !v.isDragging());
+      if (!reduceMotion && capped && elapsed < 1 / 30 - .001) return;
+      var steps = Math.min(3, elapsed * 60);
+      lastHeroFrame = t;
+      if (!v.isDragging() && !reduceMotion) {
+        v.ry += v.vy * steps; v.rx += v.vx * steps;
+        v.vy += (v.idleSpin - v.vy) * (1 - Math.pow(.96, steps));
+        v.vx *= Math.pow(.94, steps);
       }
-      v.tiltX += (v.tTiltX - v.tiltX) * .08;
-      v.tiltY += (v.tTiltY - v.tiltY) * .08;
+      var ease = 1 - Math.pow(.92, steps);
+      v.tiltX += (v.tTiltX - v.tiltX) * ease;
+      v.tiltY += (v.tTiltY - v.tiltY) * ease;
     }
     draw(v, t);
   });
   // Keep looping only while something is on screen and motion is allowed.
   if (any && !document.hidden && !reduceMotion) raf = requestAnimationFrame(frame);
 }
-function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+function kick() { if (!raf && !document.hidden) raf = requestAnimationFrame(frame); }
 // Character size is only right once DM Mono has loaded.
 document.fonts.ready.then(function () { views.forEach(resize); });
 document.addEventListener('visibilitychange', kick);
-if (heroView && reduceMotion) heroView.host.addEventListener('pointermove', kick);
 kick();
 </script>
 
