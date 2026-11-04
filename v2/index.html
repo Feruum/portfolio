@@ -25,6 +25,8 @@
     /* Palette: white paper, electric blue as the working ink, hot pink as the spark.
        (--sky / --gold are the two accent roles: blue and pink.) */
     :root {
+      --sidebar-width: 9.75rem;
+      --page-gutter: clamp(1rem, 4vw, 5.5rem);
       --bg:     #ffffff;
       --panel:  #f6f7fb;
       --ink:    #0d0e1a;
@@ -169,7 +171,7 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 155px;
+      width: var(--sidebar-width);
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -322,9 +324,9 @@
        MAIN LAYOUT
     ───────────────────────────────────────── */
     main {
-      margin-left: 155px;
-      padding: 3.8rem 4rem 0 4rem;
-      max-width: 1120px;
+      margin-inline-start: var(--sidebar-width);
+      padding: 3.8rem var(--page-gutter) 0;
+      min-width: 0;
     }
 
 
@@ -335,9 +337,10 @@
       position: relative;
       min-height: min(74vh, 710px);
       margin-bottom: clamp(2.25rem, 5vh, 3.5rem);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: center;
+      column-gap: clamp(1.5rem, 4vw, 4.5rem);
       padding-bottom: 4.5rem;
     }
 
@@ -345,7 +348,6 @@
       position: relative;
       z-index: 2;
       min-width: 0;
-      max-width: 560px;
     }
 
     .hero-status {
@@ -422,12 +424,12 @@
 
     /* hero 3D — frameless, floating on the page, two inks (blue body, pink highlights) */
     .hero-3d {
-      position: absolute;
+      position: relative;
       z-index: 1;
-      top: 0;
-      right: -4rem;
-      width: min(50%, 560px);
-      height: calc(100% - 3rem);
+      align-self: stretch;
+      width: 100%;
+      min-width: 0;
+      min-height: 20rem;
       border: 0;
       padding: 0;
       background: transparent;
@@ -448,7 +450,9 @@
     .frame-hint {
       position: absolute;
       pointer-events: none;
-      right: 4.5rem;
+      left: 0;
+      right: 0;
+      text-align: center;
       bottom: .2rem;
       font-family: 'DM Mono', monospace;
       font-size: .7rem;
@@ -460,7 +464,7 @@
     .ticker {
       position: absolute;
       left: 0;
-      right: -4rem;
+      right: 0;
       bottom: 0;
       overflow: hidden;
       border-top: 1px dashed var(--border);
@@ -492,7 +496,7 @@
     .ticker-group img { width: 20px; height: 20px; object-fit: contain; }
 
     @keyframes ticker {
-      to { transform: translateX(-50%); }
+      to { transform: translateX(var(--ticker-shift, -50%)); }
     }
 
     .hero-contact { font-style: normal; }
@@ -613,12 +617,8 @@
     .sec-hdr .bracket { color: var(--sky); }
     .sec-hdr .rule {
       flex: 1;
-      color: var(--border);
-      overflow: hidden;
-      letter-spacing: 0;
-    }
-    .sec-hdr .rule::after {
-      content: '──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────';
+      min-width: 0;
+      border-top: 1px solid var(--border);
     }
 
 
@@ -627,11 +627,11 @@
     ───────────────────────────────────────── */
     .proj-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
       gap: 2.4rem 2rem;
     }
 
-    .proj-card { position: relative; }
+    .proj-card { position: relative; min-width: 0; }
 
     .proj-thumb {
       position: relative;
@@ -1108,7 +1108,7 @@
       right: 0;
       background: var(--bg);
       border-bottom: 1px solid var(--border);
-      padding: .8rem 1.4rem;
+      padding: .8rem var(--page-gutter);
       z-index: 49;
       flex-direction: column;
       gap: 0;
@@ -1157,10 +1157,12 @@
     }
 
     @media (max-width: 1100px) {
-      .hero { min-height: 0; padding-bottom: 4.5rem; isolation: isolate; }
+      .hero { display: block; min-height: 0; padding-bottom: 4.5rem; isolation: isolate; }
       .hero-3d {
+        position: absolute;
         top: 3rem;
         right: 0;
+        min-height: 0;
         width: min(40%, 300px);
         height: clamp(140px, 30vw, 280px);
         opacity: 1;
@@ -1174,7 +1176,6 @@
       .hero-text > :not(.hero-name), .hero-name a { pointer-events: auto; }
       .hero-3d .ascii { opacity: .55; font-size: 7px; }
       .frame-hint { display: none; }
-      .ticker { right: 0; }
     }
 
     @media (max-width: 860px) {
@@ -1183,13 +1184,13 @@
         inset: 0 0 auto;
         height: 52px;
         gap: .75rem;
-        padding: 0 1.4rem;
+        padding: 0 var(--page-gutter);
         background: var(--nav-bg);
         backdrop-filter: blur(10px);
         border-bottom: 1px solid var(--border);
       }
       .mob-menu { display: flex; }
-      main            { margin-left: 0; padding: 4.5rem 1.6rem 0; }
+      main            { margin-inline-start: 0; padding-top: 4.5rem; }
       #contact, .section { scroll-margin-top: 4.2rem; }
       .hero-name      { font-size: clamp(4rem, 16vw, 7rem); }
       .proj-grid      { grid-template-columns: 1fr; gap: 0; }
@@ -1199,7 +1200,7 @@
     }
 
     @media (max-width: 480px) {
-      main         { padding: 4.3rem 1rem 0; }
+      main         { padding-top: 4.3rem; }
       .hero-status { margin-bottom: 1.25rem; }
       .hero-name   { font-size: clamp(3.4rem, 18vw, 5.5rem); }
       .hero-tagline { margin-bottom: 1.25rem; }
@@ -1600,7 +1601,20 @@
 (function () {
 
   var track = document.querySelector('.ticker-track');
-  track.appendChild(track.firstElementChild.cloneNode(true));
+  var tickerGroup = track.firstElementChild;
+  function sizeTicker() {
+    var groupWidth = tickerGroup.getBoundingClientRect().width;
+    if (!groupWidth) return;
+    // Leave a full extra group beyond the viewport for the entire loop.
+    var copies = Math.max(2, Math.ceil(track.parentElement.clientWidth / groupWidth) + 1);
+    while (track.children.length < copies) track.appendChild(tickerGroup.cloneNode(true));
+    while (track.children.length > copies) track.lastElementChild.remove();
+    track.style.setProperty('--ticker-shift', -groupWidth + 'px');
+  }
+  sizeTicker();
+  var tickerResize = new ResizeObserver(sizeTicker);
+  tickerResize.observe(track.parentElement);
+  tickerResize.observe(tickerGroup);
   track.classList.add('is-looping');
 
   /* ── MOBILE MENU ── */
